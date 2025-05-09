@@ -9,3 +9,14 @@ commands:
   pocket:
     description: Gives the player a Dimensional Pocket
     usage: /pocket
+  pocketleaderboard:
+    description: Shows the leaderboard of the most used blocks
+    usage: /pocketleaderboard
+
+permissions:
+  pocketdimension.use:
+    description: Allows the player to use /pocket
+    default: true
+  pocketdimension.leaderboard:
+    description: Allows the player to use /pocketleaderboard
+    default: true

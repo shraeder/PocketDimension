@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
@@ -33,18 +34,17 @@ public class PocketGUI implements Listener {
     public void onUsePocket(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        // Check shift + left click
         if (!player.isSneaking() || !event.getAction().toString().contains("LEFT_CLICK")) return;
 
         ItemStack item = event.getItem();
         if (item != null && item.getType() == Material.GLASS_BOTTLE &&
             item.hasItemMeta() &&
             "§bDimensional Pocket".equals(item.getItemMeta().getDisplayName())) {
-        
-            event.setCancelled(true); // Stop breaking blocks or doing anything else
+
+            event.setCancelled(true);
             openPocket(player);
         }
-    }   
+    }
 
     private void openPocket(Player player) {
         Inventory inv = Bukkit.createInventory(null, 9, "Dimensional Pocket");
@@ -69,10 +69,11 @@ public class PocketGUI implements Listener {
 
         event.setCancelled(true);
         Player player = (Player) event.getWhoClicked();
-        int slot = event.getRawSlot();
+        int rawSlot = event.getRawSlot();
 
-        if (slot >= 0 && slot < 9) {
-            Material mat = slotMaterialMap.get(slot);
+        // GUI Slots: Withdraw logic (LEFT-click)
+        if (rawSlot >= 0 && rawSlot < 9 && event.getClick().isLeftClick()) {
+            Material mat = slotMaterialMap.get(rawSlot);
             UUID uuid = player.getUniqueId();
             int current = plugin.getStorageManager().getAmount(uuid, mat.name());
 
@@ -80,6 +81,24 @@ public class PocketGUI implements Listener {
                 int withdrawAmount = Math.min(64, current);
                 player.getInventory().addItem(new ItemStack(mat, withdrawAmount));
                 plugin.getStorageManager().addAmount(uuid, mat.name(), -withdrawAmount);
+                openPocket(player);
+            } else {
+                player.sendMessage("§cNot enough stored or inventory full.");
+            }
+        }
+
+        // Player inventory: Deposit logic (SHIFT + LEFT-click)
+        if (rawSlot >= event.getInventory().getSize()
+                && event.getClick() == ClickType.SHIFT_LEFT) {
+
+            ItemStack clicked = player.getInventory().getItem(event.getSlot());
+
+            if (clicked != null && trackedMaterials.contains(clicked.getType())) {
+                Material mat = clicked.getType();
+                int amount = clicked.getAmount();
+
+                plugin.getStorageManager().addAmount(player.getUniqueId(), mat.name(), amount);
+                player.getInventory().clear(event.getSlot());
                 openPocket(player);
             }
         }

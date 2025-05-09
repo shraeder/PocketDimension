@@ -7,20 +7,16 @@ public class PocketPlugin extends JavaPlugin {
     private StorageManager storageManager;
 
     @Override
-    public void onEnable() {
-        instance = this;
-        this.storageManager = new StorageManager(this);
+        public void onEnable() {
+            instance = this;
+            this.storageManager = new StorageManager(this);
 
-        getServer().getPluginManager().registerEvents(new PocketGUI(this), this);
-        getServer().getPluginManager().registerEvents(new PocketPickupListener(this), this);
+            getServer().getPluginManager().registerEvents(new PocketGUI(this), this);
+            getServer().getPluginManager().registerEvents(new PocketPickupListener(this), this);
 
-        if (getCommand("pocket") != null) {
             getCommand("pocket").setExecutor(new PocketCommand());
-            getLogger().info("Registered /pocket command.");
-        } else {
-            getLogger().warning("Failed to register /pocket command. Check plugin.yml.");
+            getCommand("pocketleaderboard").setExecutor(new PocketLeaderboardCommand());
         }
-    }
 
     public static PocketPlugin getInstance() {
         return instance;
