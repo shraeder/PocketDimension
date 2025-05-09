@@ -39,6 +39,15 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 
 ---
 
+## Future Upgrades
+
+1. Crafting the pocket dimension and upgradeable tier system to allow more blocks/items to be saved
+2. Block placement from pocket dimension
+3. Sounds and particles config
+4. Collection Milestones and Statistics
+
+---
+
 ## Requirements
 
 - Spigot 1.21+
