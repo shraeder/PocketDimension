@@ -1,0 +1,11 @@
+name: PocketDimension
+version: 1.0
+main: com.example.pocketdimension.PocketPlugin
+api-version: 1.18
+description: A virtual pocket dimension to store and withdraw building blocks
+author: Calvin
+
+commands:
+  pocket:
+    description: Gives the player a Dimensional Pocket
+    usage: /pocket
