@@ -8,13 +8,15 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 
 ## Features
 
-- ✅ Stores Andesite, Cobble, Cobbled Deepslate, Diorite, Dirt, Granite, Gravel, Netherrack, and Sand
+- ✅ The Dimensional Pocket item is a **bundle** (with vanilla bundle storage disabled)
 - ✅ Shift + Left Click while holding to open its storage GUI
-- ✅ Automatically stores mined blocks while in your inventory
+- ✅ Stores items defined in `gui-items.yml` (server owners can add/remove item types)
+- ✅ Automatically stores tracked pickups while the pocket is in your inventory
 - ✅ Withdraw blocks with a left click in the GUI
 - ✅ Deposit from your inventory with shift-left-click while the GUI is open
-- ✅ Persistent storage per-player (YAML-based)
-- ✅ Built-in leaderboard to see who hoards the most dirt, gravel, and shame
+- ✅ Persistent storage per-player (No lost items when the Pocket goes missing)
+- ✅ Built-in leaderboard that ranks players by **total items stored**
+- ✅ Hot-reload support (`/pocket reload`) to refresh GUI items and migrate storage keys
 - ✅ Permission support (`pocketdimension.use`, `pocketdimension.leaderboard`)
 
 ---
@@ -24,7 +26,8 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 | Command               | Description                               | Permission                    |
 |-----------------------|-------------------------------------------|-------------------------------|
 | `/pocket`             | Gives you a Dimensional Pocket item       | `pocketdimension.use`         |
-| `/pocketleaderboard`  | Shows who has hoarded the most blocks     | `pocketdimension.leaderboard` |
+| `/pocket reload`      | Reloads `gui-items.yml` + migrates storage | `pocketdimension.reload` (op) |
+| `/pocketleaderboard`  | Shows the top players by total stored     | `pocketdimension.leaderboard` |
 
 ---
 
@@ -35,7 +38,12 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 3. **Left Click** a block in the GUI to withdraw.
 4. **Shift + Left Click** a matching block in your inventory to deposit.
 5. Watch your inventory stay clean while you stockpile like a gremlin.
-6. Use `/pocketleaderboard` to see who’s winning the hoarding olympics with per-block stats
+6. Use `/pocketleaderboard` to see who’s winning the hoarding olympics by total stored.
+
+### Configuring Stored Items
+
+- Edit `plugins/PocketDimension/gui-items.yml` to control which materials appear in the GUI and are stored automatically.
+- Use `/pocket reload` to apply changes without restarting the server.
 
 ---
 
