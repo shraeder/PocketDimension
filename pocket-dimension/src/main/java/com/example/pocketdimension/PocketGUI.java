@@ -16,11 +16,13 @@ import java.util.*;
 
 public class PocketGUI implements Listener {
     private final PocketPlugin plugin;
+    private final PocketModeManager modeManager;
     private final Map<Integer, Material> slotMaterialMap;
     private List<Material> trackedMaterials;
 
     public PocketGUI(PocketPlugin plugin) {
         this.plugin = plugin;
+        this.modeManager = plugin.getPocketModeManager();
         this.slotMaterialMap = new HashMap<>();
         this.trackedMaterials = new ArrayList<>();
 
@@ -52,13 +54,30 @@ public class PocketGUI implements Listener {
     public void onUsePocket(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.isSneaking() || !event.getAction().toString().contains("LEFT_CLICK")) return;
+        if (!player.isSneaking()) return;
 
         ItemStack item = event.getItem();
         if (PocketItem.isPocketItem(item)) {
+            String action = event.getAction().toString();
 
-            event.setCancelled(true);
-            openPocket(player);
+            // Sneak-right-click while holding: deselect placement mode quickly.
+            if (action.contains("RIGHT_CLICK")) {
+                if (modeManager.isPlacementModeEnabled(player.getUniqueId())) {
+                    modeManager.clearPlacementMode(player.getUniqueId());
+                    player.sendMessage("§aDimensional Pocket placement mode disabled.");
+                } else {
+                    player.sendMessage("§7Dimensional Pocket is already in normal mode.");
+                }
+                event.setCancelled(true);
+                return;
+            }
+
+            // Sneak-left-click while holding: open GUI (and reset state back to default).
+            if (action.contains("LEFT_CLICK")) {
+                event.setCancelled(true);
+                modeManager.clearPlacementMode(player.getUniqueId());
+                openPocket(player);
+            }
         }
     }
 
@@ -68,6 +87,8 @@ public class PocketGUI implements Listener {
         int size = rows * 9;
 
         Inventory inv = Bukkit.createInventory(null, size, "Dimensional Pocket");
+
+        Material selected = modeManager.getPlacementMaterial(player.getUniqueId());
 
         for (int i = 0; i < size; i++) {
             if (!slotMaterialMap.containsKey(i)) continue;
@@ -80,6 +101,12 @@ public class PocketGUI implements Listener {
             meta.setDisplayName(mat.name());
             List<String> lore = new ArrayList<>();
             lore.add("Stored: " + count);
+            lore.add("§7Left-click: withdraw");
+            lore.add("§7Shift-left (inv): deposit");
+            lore.add("§7Right-click: toggle placement");
+            if (selected != null && selected == mat) {
+                lore.add("§aPlacement mode: SELECTED");
+            }
             meta.setLore(lore);
             icon.setItemMeta(meta);
             inv.setItem(i, icon);
@@ -96,6 +123,27 @@ public class PocketGUI implements Listener {
         int rawSlot = event.getRawSlot();
 
         int topSize = event.getView().getTopInventory().getSize();
+
+        // GUI Slots: Toggle placement mode (RIGHT-click)
+        if (rawSlot >= 0 && rawSlot < topSize && slotMaterialMap.containsKey(rawSlot)
+            && event.getClick().isRightClick()) {
+
+            Material mat = slotMaterialMap.get(rawSlot);
+            UUID uuid = player.getUniqueId();
+            Material current = modeManager.getPlacementMaterial(uuid);
+
+            if (current == mat) {
+                modeManager.clearPlacementMode(uuid);
+                player.sendMessage("§aDimensional Pocket placement mode disabled.");
+            } else {
+                modeManager.setPlacementMaterial(uuid, mat);
+                player.sendMessage("§aDimensional Pocket placement mode enabled: §f" + mat.name());
+                player.sendMessage("§7Right-click a block while holding the pocket to place. Sneak-right-click to disable.");
+            }
+
+            openPocket(player);
+            return;
+        }
 
         // GUI Slots: Withdraw logic (LEFT-click)
         if (rawSlot >= 0 && rawSlot < topSize && event.getClick().isLeftClick() && slotMaterialMap.containsKey(rawSlot)) {

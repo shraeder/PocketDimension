@@ -14,6 +14,8 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 - ✅ Automatically stores tracked pickups while the pocket is in your inventory
 - ✅ Withdraw blocks with a left click in the GUI
 - ✅ Deposit from your inventory with shift-left-click while the GUI is open
+- ✅ Optional **Placement Mode**: right-click a block in the GUI to arm it for placement, then right-click a block in the world while holding the pocket to place (consumes from stored count)
+- ✅ Easy deselect: right-click the same block again in the GUI, or **Shift + Right Click** while holding the pocket to return to normal mode
 - ✅ Persistent storage per-player (No lost items when the Pocket goes missing)
 - ✅ Built-in leaderboard that ranks players by **total items stored**
 - ✅ Hot-reload support (`/pocket reload`) to refresh GUI items and migrate storage keys
@@ -37,6 +39,10 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 2. Hold it and **Shift + Left Click** to open the GUI.
 3. **Left Click** a block in the GUI to withdraw.
 4. **Shift + Left Click** a matching block in your inventory to deposit.
+5. (Optional) **Right Click** a block in the GUI to toggle **Placement Mode** for that block.
+	- While holding the pocket, **Right Click** a block in the world to place the selected block (uses 1 from storage each place).
+	- **Right Click** the same block again in the GUI, or **Shift + Right Click** while holding the pocket, to disable Placement Mode.
+	- Opening the GUI always resets back to normal mode.
 5. Watch your inventory stay clean while you stockpile like a gremlin.
 6. Use `/pocketleaderboard` to see who’s winning the hoarding olympics by total stored.
 
@@ -50,9 +56,8 @@ Forget cramming your inventory full of cobble and dirt. Store your grindables in
 ## Future Upgrades
 
 1. Crafting the pocket dimension and upgradeable tier system to allow more blocks/items to be saved
-2. Block placement from pocket dimension
-3. Sounds and particles config
-4. Collection Milestones and Statistics
+2. Sounds and particles config
+3. Collection Milestones and Statistics
 
 ---
 

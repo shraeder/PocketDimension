@@ -28,7 +28,7 @@ public class StorageManager {
     }
 
     public void setAmount(UUID uuid, String material, int amount) {
-        config.set(uuid + "." + material, amount);
+        config.set(uuid + "." + material, Math.max(0, amount));
         save();
     }
 

@@ -12,15 +12,18 @@ import java.util.Map;
 public class PocketPlugin extends JavaPlugin {
     private static PocketPlugin instance;
     private StorageManager storageManager;
+    private PocketModeManager pocketModeManager;
     private PocketGUI pocketGUI;
     private PocketPickupListener pocketPickupListener;
     private PocketItemProtectionListener pocketItemProtectionListener;
     private PocketItemNormalizeListener pocketItemNormalizeListener;
+    private PocketPlacementListener pocketPlacementListener;
 
     @Override
     public void onEnable() {
         instance = this;
         this.storageManager = new StorageManager(this);
+        this.pocketModeManager = new PocketModeManager();
 
         // Ensure default gui-items.yml is available in the plugin data folder
         saveResource("gui-items.yml", false);
@@ -42,6 +45,9 @@ public class PocketPlugin extends JavaPlugin {
 
         this.pocketItemNormalizeListener = new PocketItemNormalizeListener(this);
         getServer().getPluginManager().registerEvents(this.pocketItemNormalizeListener, this);
+
+        this.pocketPlacementListener = new PocketPlacementListener(this);
+        getServer().getPluginManager().registerEvents(this.pocketPlacementListener, this);
 
         getCommand("pocket").setExecutor(new PocketCommand());
         getCommand("pocketleaderboard").setExecutor(new PocketLeaderboardCommand());
@@ -104,6 +110,10 @@ public class PocketPlugin extends JavaPlugin {
                 HandlerList.unregisterAll(this.pocketItemNormalizeListener);
             }
 
+            if (this.pocketPlacementListener != null) {
+                HandlerList.unregisterAll(this.pocketPlacementListener);
+            }
+
             this.pocketGUI = new PocketGUI(this);
             getServer().getPluginManager().registerEvents(this.pocketGUI, this);
 
@@ -115,6 +125,9 @@ public class PocketPlugin extends JavaPlugin {
 
             this.pocketItemNormalizeListener = new PocketItemNormalizeListener(this);
             getServer().getPluginManager().registerEvents(this.pocketItemNormalizeListener, this);
+
+            this.pocketPlacementListener = new PocketPlacementListener(this);
+            getServer().getPluginManager().registerEvents(this.pocketPlacementListener, this);
             return true;
         } catch (IOException e) {
             getLogger().severe("Failed to reload GUI: " + e.getMessage());
@@ -128,5 +141,9 @@ public class PocketPlugin extends JavaPlugin {
 
     public StorageManager getStorageManager() {
         return storageManager;
+    }
+
+    public PocketModeManager getPocketModeManager() {
+        return pocketModeManager;
     }
 }
