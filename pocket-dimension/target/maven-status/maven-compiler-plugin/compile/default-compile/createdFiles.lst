@@ -1,7 +1,8 @@
 com\example\pocketdimension\PocketPickupListener.class
-com\example\pocketdimension\ReloadGuiCommand.class
-com\example\pocketdimension\PocketGUI.class
 com\example\pocketdimension\PocketLeaderboardCommand.class
 com\example\pocketdimension\StorageManager.class
-com\example\pocketdimension\PocketCommand.class
 com\example\pocketdimension\PocketPlugin.class
+com\example\pocketdimension\PocketItemProtectionListener$1.class
+com\example\pocketdimension\ReloadGuiCommand.class
+com\example\pocketdimension\PocketGUI.class
+com\example\pocketdimension\PocketCommand.class

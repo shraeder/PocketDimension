@@ -64,7 +64,7 @@ public class PocketPickupListener implements Listener {
         // Check if the player has a Dimensional Pocket in inventory
         boolean hasPocket = false;
         for (ItemStack invItem : player.getInventory().getContents()) {
-            if (isPocketItem(invItem)) {
+            if (PocketItem.isPocketItem(invItem)) {
                 hasPocket = true;
                 break;
             }
@@ -84,11 +84,5 @@ public class PocketPickupListener implements Listener {
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
     }
 
-    private boolean isPocketItem(ItemStack item) {
-        if (item == null || item.getType() != Material.GLASS_BOTTLE) return false;
-        if (!item.hasItemMeta()) return false;
-
-        ItemMeta meta = item.getItemMeta();
-        return "§bDimensional Pocket".equals(meta.getDisplayName());
-    }
+    
 }

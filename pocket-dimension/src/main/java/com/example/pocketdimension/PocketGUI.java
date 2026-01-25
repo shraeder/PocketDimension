@@ -55,9 +55,7 @@ public class PocketGUI implements Listener {
         if (!player.isSneaking() || !event.getAction().toString().contains("LEFT_CLICK")) return;
 
         ItemStack item = event.getItem();
-        if (item != null && item.getType() == Material.GLASS_BOTTLE &&
-            item.hasItemMeta() &&
-            "§bDimensional Pocket".equals(item.getItemMeta().getDisplayName())) {
+        if (PocketItem.isPocketItem(item)) {
 
             event.setCancelled(true);
             openPocket(player);

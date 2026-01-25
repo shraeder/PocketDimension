@@ -1,12 +1,8 @@
 package com.example.pocketdimension;
 
-import org.bukkit.Material;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Collections;
 
 public class PocketCommand implements CommandExecutor {
     @Override
@@ -39,21 +35,14 @@ public class PocketCommand implements CommandExecutor {
 
         // Check for existing Dimensional Pocket
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null &&
-                item.getType() == Material.GLASS_BOTTLE &&
-                item.hasItemMeta() &&
-                "§bDimensional Pocket".equals(item.getItemMeta().getDisplayName())) {
+            if (PocketItem.isPocketItem(item)) {
                 player.sendMessage("§eYou already have a Dimensional Pocket.");
                 return true;
             }
         }
 
         // Give new pocket item
-        ItemStack item = new ItemStack(Material.GLASS_BOTTLE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§bDimensional Pocket");
-        meta.setLore(Collections.singletonList("§7Shift-left-click while holding to open"));
-        item.setItemMeta(meta);
+        ItemStack item = PocketItem.create();
 
         player.getInventory().addItem(item);
         player.sendMessage("§aYou have received a Dimensional Pocket.");

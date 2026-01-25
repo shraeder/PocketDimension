@@ -14,6 +14,8 @@ public class PocketPlugin extends JavaPlugin {
     private StorageManager storageManager;
     private PocketGUI pocketGUI;
     private PocketPickupListener pocketPickupListener;
+    private PocketItemProtectionListener pocketItemProtectionListener;
+    private PocketItemNormalizeListener pocketItemNormalizeListener;
 
     @Override
     public void onEnable() {
@@ -35,6 +37,11 @@ public class PocketPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(this.pocketGUI, this);
         this.pocketPickupListener = new PocketPickupListener(this);
         getServer().getPluginManager().registerEvents(this.pocketPickupListener, this);
+        this.pocketItemProtectionListener = new PocketItemProtectionListener();
+        getServer().getPluginManager().registerEvents(this.pocketItemProtectionListener, this);
+
+        this.pocketItemNormalizeListener = new PocketItemNormalizeListener(this);
+        getServer().getPluginManager().registerEvents(this.pocketItemNormalizeListener, this);
 
         getCommand("pocket").setExecutor(new PocketCommand());
         getCommand("pocketleaderboard").setExecutor(new PocketLeaderboardCommand());
@@ -89,11 +96,25 @@ public class PocketPlugin extends JavaPlugin {
                 HandlerList.unregisterAll(this.pocketPickupListener);
             }
 
+            if (this.pocketItemProtectionListener != null) {
+                HandlerList.unregisterAll(this.pocketItemProtectionListener);
+            }
+
+            if (this.pocketItemNormalizeListener != null) {
+                HandlerList.unregisterAll(this.pocketItemNormalizeListener);
+            }
+
             this.pocketGUI = new PocketGUI(this);
             getServer().getPluginManager().registerEvents(this.pocketGUI, this);
 
             this.pocketPickupListener = new PocketPickupListener(this);
             getServer().getPluginManager().registerEvents(this.pocketPickupListener, this);
+
+            this.pocketItemProtectionListener = new PocketItemProtectionListener();
+            getServer().getPluginManager().registerEvents(this.pocketItemProtectionListener, this);
+
+            this.pocketItemNormalizeListener = new PocketItemNormalizeListener(this);
+            getServer().getPluginManager().registerEvents(this.pocketItemNormalizeListener, this);
             return true;
         } catch (IOException e) {
             getLogger().severe("Failed to reload GUI: " + e.getMessage());
