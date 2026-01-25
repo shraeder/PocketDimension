@@ -2,6 +2,7 @@ package com.example.pocketdimension;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,21 +11,45 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class PocketPickupListener implements Listener {
     private final PocketPlugin plugin;
-    private final List<Material> trackedMaterials = Arrays.asList(
-        Material.COBBLESTONE, Material.COBBLED_DEEPSLATE, Material.DIORITE,
-        Material.ANDESITE, Material.GRANITE, Material.GRAVEL, Material.DIRT,
-        Material.SAND, Material.NETHERRACK
-    );
+    private final Set<Material> trackedMaterials;
 
     public PocketPickupListener(PocketPlugin plugin) {
         this.plugin = plugin;
+        this.trackedMaterials = new HashSet<>();
+
+        // Load tracked materials from gui-items.yml so pickup-storage matches the GUI configuration
+        try {
+            File cfgFile = new File(plugin.getDataFolder(), "gui-items.yml");
+            if (!cfgFile.exists()) {
+                plugin.saveResource("gui-items.yml", false);
+            }
+
+            YamlConfiguration cfg = YamlConfiguration.loadConfiguration(cfgFile);
+            List<String> items = cfg.getStringList("items");
+            for (String matName : items) {
+                if (matName == null) continue;
+                Material mat = Material.matchMaterial(matName);
+                if (mat != null) trackedMaterials.add(mat);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to load gui-items.yml for pickup storage: " + e.getMessage());
+        }
+
+        // Fallback to original defaults if config is empty/invalid
+        if (trackedMaterials.isEmpty()) {
+            trackedMaterials.addAll(Arrays.asList(
+                Material.COBBLESTONE, Material.COBBLED_DEEPSLATE, Material.DIORITE,
+                Material.ANDESITE, Material.GRANITE, Material.GRAVEL, Material.DIRT,
+                Material.SAND, Material.NETHERRACK
+            ));
+        }
     }
 
     @EventHandler

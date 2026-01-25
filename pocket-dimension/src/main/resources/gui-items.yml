@@ -1,0 +1,14 @@
+# Simple GUI items list. First = slot 1 (top-left).
+# Each entry is a material name. Every 9 items starts a new row.
+
+items:
+  - COBBLESTONE
+  - COBBLED_DEEPSLATE
+  - DIORITE
+  - ANDESITE
+  - GRANITE
+  - GRAVEL
+  - DIRT
+  - SAND
+  - NETHERRACK
+  - STONE

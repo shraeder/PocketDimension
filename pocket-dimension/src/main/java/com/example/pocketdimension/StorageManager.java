@@ -36,6 +36,24 @@ public class StorageManager {
         setAmount(uuid, material, getAmount(uuid, material) + amount);
     }
 
+    public void migrateMaterial(String oldMaterial, String newMaterial) {
+        if (oldMaterial == null || newMaterial == null) return;
+        if (oldMaterial.equals(newMaterial)) return;
+
+        for (String key : config.getKeys(false)) {
+            // top-level keys are UUID strings
+            String oldPath = key + "." + oldMaterial;
+            int oldVal = config.getInt(oldPath, 0);
+            if (oldVal > 0) {
+                String newPath = key + "." + newMaterial;
+                int newVal = config.getInt(newPath, 0);
+                config.set(newPath, newVal + oldVal);
+                config.set(oldPath, null);
+            }
+        }
+        save();
+    }
+
     public void save() {
         try {
             config.save(storageFile);

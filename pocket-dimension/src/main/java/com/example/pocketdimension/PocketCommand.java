@@ -11,6 +11,24 @@ import java.util.Collections;
 public class PocketCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Handle reload subcommand first (allow console)
+        if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
+            // Allow console and server ops only
+            if (!(sender instanceof org.bukkit.command.ConsoleCommandSender) && !sender.isOp()) {
+                sender.sendMessage("§cYou don't have permission to do that.");
+                return true;
+            }
+
+            sender.sendMessage("§eReloading pocket GUI...");
+            boolean ok = PocketPlugin.getInstance().reloadGui();
+            if (ok) {
+                sender.sendMessage("§aPocket GUI reloaded.");
+            } else {
+                sender.sendMessage("§cFailed to reload Pocket GUI. Check console for details.");
+            }
+            return true;
+        }
+
         if (!(sender instanceof Player)) return true;
         Player player = (Player) sender;
 

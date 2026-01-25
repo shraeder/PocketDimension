@@ -1,5 +1,5 @@
 name: PocketDimension
-version: 1.0
+version: 2.0
 main: com.example.pocketdimension.PocketPlugin
 api-version: 1.18
 description: A virtual pocket dimension to store and withdraw building blocks
@@ -20,3 +20,6 @@ permissions:
   pocketdimension.leaderboard:
     description: Allows the player to use /pocketleaderboard
     default: true
+  pocketdimension.reload:
+    description: Allows reloading the pocket GUI without a server restart
+    default: op
