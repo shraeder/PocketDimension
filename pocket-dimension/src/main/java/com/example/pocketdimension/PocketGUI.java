@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,35 +51,43 @@ public class PocketGUI implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onUsePocket(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         if (!player.isSneaking()) return;
 
-        ItemStack item = event.getItem();
+        // Avoid firing twice (main hand + offhand).
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        // event.getItem() can be null for some actions; use main hand directly.
+        ItemStack item = player.getInventory().getItemInMainHand();
         if (PocketItem.isPocketItem(item)) {
             String action = event.getAction().toString();
-
-            // Sneak-right-click while holding: deselect placement mode quickly.
-            if (action.contains("RIGHT_CLICK")) {
-                if (modeManager.isPlacementModeEnabled(player.getUniqueId())) {
-                    modeManager.clearPlacementMode(player.getUniqueId());
-                    player.sendMessage("§aDimensional Pocket placement mode disabled.");
-                } else {
-                    player.sendMessage("§7Dimensional Pocket is already in normal mode.");
-                }
-                event.setCancelled(true);
-                return;
-            }
 
             // Sneak-left-click while holding: open GUI (and reset state back to default).
             if (action.contains("LEFT_CLICK")) {
                 event.setCancelled(true);
-                modeManager.clearPlacementMode(player.getUniqueId());
+                plugin.disablePlacementMode(player);
                 openPocket(player);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onSneakLeftClickAirOpen(PlayerAnimationEvent event) {
+        Player player = event.getPlayer();
+        if (!player.isSneaking()) return;
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (!PocketItem.isPocketItem(item)) return;
+
+        // If a block is being targeted, PlayerInteractEvent (LEFT_CLICK_BLOCK) will handle it.
+        // This is the fallback for left-click air.
+        if (player.getTargetBlockExact(5) != null) return;
+
+        plugin.disablePlacementMode(player);
+        openPocket(player);
     }
 
     private void openPocket(Player player) {
@@ -133,12 +142,13 @@ public class PocketGUI implements Listener {
             Material current = modeManager.getPlacementMaterial(uuid);
 
             if (current == mat) {
-                modeManager.clearPlacementMode(uuid);
+                plugin.disablePlacementMode(player);
                 player.sendMessage("§aDimensional Pocket placement mode disabled.");
             } else {
-                modeManager.setPlacementMaterial(uuid, mat);
+                plugin.enablePlacementMode(player, mat);
                 player.sendMessage("§aDimensional Pocket placement mode enabled: §f" + mat.name());
-                player.sendMessage("§7Right-click a block while holding the pocket to place. Sneak-right-click to disable.");
+                player.sendMessage("§7Your pocket turns into the block. Hold right-click to place like vanilla.");
+                player.sendMessage("§7Sneak-right-click to disable.");
             }
 
             openPocket(player);

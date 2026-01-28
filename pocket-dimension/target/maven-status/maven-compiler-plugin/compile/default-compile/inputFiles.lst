@@ -1,4 +1,6 @@
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketCommand.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketGhostItem.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketGhostItemListener.java
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketGUI.java
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketItem.java
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketItemNormalizeListener.java
@@ -10,3 +12,7 @@ C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\examp
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\PocketPlugin.java
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\ReloadGuiCommand.java
 C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\StorageManager.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\update\SpigetUpdateChecker.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\update\UpdateCheckResult.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\update\UpdateNotifyListener.java
+C:\Users\calvi\Desktop\Pocket Dimension\pocket-dimension\src\main\java\com\example\pocketdimension\update\VersionComparator.java

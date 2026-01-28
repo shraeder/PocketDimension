@@ -1,0 +1,20 @@
+
+# PocketDimension configuration
+
+update-check:
+	enabled: true
+
+	# Checks Spigot via Spiget (unofficial public API)
+	# Resource URL: https://www.spigotmc.org/resources/pocket-dimension.124854/
+	provider: spiget
+	spigot-resource-id: 124854
+
+	# How often to check (in hours). Also checks once on startup.
+	interval-hours: 24
+
+	# Notify OPs when they join if an update is available.
+	notify-ops-on-join: true
+
+	# Optional: override the download page shown in messages.
+	# If empty, defaults to the Spigot resource page.
+	download-url: "https://www.spigotmc.org/resources/pocket-dimension.124854/"

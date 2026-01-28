@@ -1,5 +1,6 @@
 package com.example.pocketdimension;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -7,15 +8,13 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.*;
-import java.util.UUID;
 
-@SuppressWarnings("deprecation")
 public class PocketPickupListener implements Listener {
     private final PocketPlugin plugin;
     private final Set<Material> trackedMaterials;
@@ -52,28 +51,34 @@ public class PocketPickupListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPickup(PlayerPickupItemEvent event) {
-        Player player = event.getPlayer();
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPickup(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+
+        Player player = (Player) event.getEntity();
         Item itemEntity = event.getItem();
         ItemStack itemStack = itemEntity.getItemStack();
         Material material = itemStack.getType();
 
         if (!trackedMaterials.contains(material)) return;
 
-        // Check if the player has a Dimensional Pocket in inventory
-        boolean hasPocket = false;
-        for (ItemStack invItem : player.getInventory().getContents()) {
-            if (PocketItem.isPocketItem(invItem)) {
-                hasPocket = true;
-                break;
+        UUID uuid = player.getUniqueId();
+
+        // Check if the player has a Dimensional Pocket in inventory.
+        // If placement mode is enabled, treat them as having a pocket even if the ghost item blinks for a tick.
+        boolean hasPocket = plugin.getPocketModeManager().isPlacementModeEnabled(uuid);
+        if (!hasPocket) {
+            for (ItemStack invItem : player.getInventory().getContents()) {
+                if (PocketItem.isPocketItem(invItem) || plugin.getPocketGhostItem().isGhost(invItem)) {
+                    hasPocket = true;
+                    break;
+                }
             }
         }
 
         if (!hasPocket) return;
 
         // Store item and cancel normal pickup
-        UUID uuid = player.getUniqueId();
         int amount = itemStack.getAmount();
         plugin.getStorageManager().addAmount(uuid, material.name(), amount);
 
@@ -82,6 +87,12 @@ public class PocketPickupListener implements Listener {
 
         // Play the normal pickup sound
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
+
+        // If the player has placement mode enabled, keep the ghost item's lore/count in sync
+        // even if they aren't currently holding it.
+        if (plugin.getPocketModeManager().isPlacementModeEnabled(uuid)) {
+            Bukkit.getScheduler().runTask(plugin, () -> plugin.updateGhostItemIfPresent(player));
+        }
     }
 
     

@@ -27,6 +27,11 @@ public class PocketItemNormalizeListener implements Listener {
 
             for (int i = 0; i < contents.length; i++) {
                 ItemStack item = contents[i];
+                if (plugin.getPocketGhostItem().isGhost(item)) {
+                    contents[i] = PocketItem.create();
+                    changedAny = true;
+                    continue;
+                }
                 if (!PocketItem.isPocketItem(item)) continue;
 
                 changedAny |= normalize(item);
